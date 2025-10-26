@@ -4,7 +4,10 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            ContactCatalogue cc = new ContactCatalogue();
+            cc.AddContact(new Contact(1, "name", "m@gmail.com", "je, d, d"));
+            cc.AddContact(new Contact(2, "name", "m@gmail.com", "je, d, d"));
+
         }
     }
 }
