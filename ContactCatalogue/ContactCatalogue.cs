@@ -9,15 +9,16 @@ namespace ContactCatalogue
 {
     internal class ContactCatalogue
     {
-        private Dictionary<int, Contact> byId = new Dictionary<int, Contact>();
-        private HashSet<string> emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        public void AddContact(Contact c)
+        public Dictionary<int, Contact> ById = new Dictionary<int, Contact>();
+        private HashSet<string> Emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        public bool AddContact(Contact c)
         {
             try
             {
                 if (!IsValidEmail(c.Email)) throw new InvalidEmailException(c.Email);
-                if (!emails.Add(c.Email)) throw new DuplicateEmailException(c.Email);
+                if (!Emails.Add(c.Email)) throw new DuplicateEmailException(c.Email);
             }
             catch (InvalidEmailException ex)
             {
@@ -25,6 +26,8 @@ namespace ContactCatalogue
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"CAUGHT VALIDATION ERROR: {ex.Message}");
                 Console.ResetColor();
+                Console.ReadKey(true);
+                return false;
             }
             catch (DuplicateEmailException ex)
             {
@@ -32,10 +35,26 @@ namespace ContactCatalogue
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"CAUGHT DUPLICATE ERROR: {ex.Message}");
                 Console.ResetColor();
+                Console.ReadKey(true);
+                return false;
             }
-            byId.Add(c.Id, c);
+            ById.Add(c.Id, c);
+            return true;
         }
-        static bool IsValidEmail(string email)
+
+       
+
+        public int GenerateUniqueID()
+        {
+            int uniqueID = 0;
+            Random random = new Random();
+            do
+            {
+                uniqueID = random.Next(10000);
+            } while (ById.ContainsKey(uniqueID));
+            return uniqueID;   
+        }
+        public static bool IsValidEmail(string email)
         {
             try
             {

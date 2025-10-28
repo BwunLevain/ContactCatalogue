@@ -8,7 +8,7 @@ namespace ContactCatalogue
 {
     internal class Contact
     {
-        public int Id;
+        private int Id;
         public string Name { get; set; }
         public string Email { get; set; }
         public List<string> Tags { get; set; }
@@ -20,6 +20,11 @@ namespace ContactCatalogue
             Id = id;
             Tags = tags.Split(",").Select(t => t.Trim()).ToList();
             
+        }
+
+        public override string ToString()
+        {
+            return $"{Name} | {Email} | {Tags}";
         }
     }
 }
