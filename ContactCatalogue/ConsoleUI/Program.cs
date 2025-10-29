@@ -9,10 +9,6 @@ namespace ContactCatalogue.ConsoleUI
         {
             ContactCatalogue cc = new ContactCatalogue();
 
-            // Existing sample
-            cc.AddContact(new Contact(cc.GenerateUniqueID(), "Melvin", "melvin@gmail.com", "friend, guy, young"));
-
-            // 20 additional sample contacts
             cc.AddContact(new Contact(cc.GenerateUniqueID(), "Ava Harper", "ava.harper@example.com", "friend, coworker"));
             cc.AddContact(new Contact(cc.GenerateUniqueID(), "Ben Carter", "ben.carter@example.com", "family"));
             cc.AddContact(new Contact(cc.GenerateUniqueID(), "Clara Nguyen", "clara.nguyen@example.org", "work"));

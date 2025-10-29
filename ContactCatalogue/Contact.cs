@@ -8,7 +8,7 @@ namespace ContactCatalogue
 {
     internal class Contact
     {
-        private int Id;
+        public int Id;
         public string Name { get; set; }
         public string Email { get; set; }
         public List<string> Tags { get; set; }
@@ -24,7 +24,7 @@ namespace ContactCatalogue
 
         public override string ToString()
         {
-            return $"{Name} | {Email} | {Tags}";
+            return $"{Name} | {Email} | {String.Join(", ", Tags)}";
         }
     }
 }
