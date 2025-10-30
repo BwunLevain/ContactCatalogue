@@ -10,7 +10,7 @@ namespace ContactCatalogue
 {
     internal class ContactCatalogue
     {
-        private Dictionary<int, Contact> byId = new Dictionary<int, Contact>();
+        public Dictionary<int, Contact> byId = new Dictionary<int, Contact>();
         private HashSet<string> emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly ILogger<ContactCatalogue> _logger;
 
@@ -55,6 +55,12 @@ namespace ContactCatalogue
                 return addr.Address == email;
             }
             catch { return false; }
+        }
+
+        public int GenerateUniqueID()
+        {
+            Random rnd = new Random();
+            return rnd.Next(99, 1000);
         }
     }
 }

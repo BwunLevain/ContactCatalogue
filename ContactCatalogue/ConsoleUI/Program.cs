@@ -61,13 +61,13 @@ namespace ContactCatalogue.ConsoleUI
                         contactAdder.Run();
                         break;
                     case "2":
-                        if (cc.ById.Count == 0)
+                        if (cc.byId.Count == 0)
                         {
                             Console.WriteLine("No contacts....");
                             Console.ReadKey(true);
                             break;
                         }
-                        foreach (var kvp in cc.ById)
+                        foreach (var kvp in cc.byId)
                         {
                             Console.WriteLine($"\n* ({kvp.Key}) {kvp.Value}");
                         }
