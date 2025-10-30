@@ -1,60 +1,53 @@
-﻿using System;
+﻿using ContactCatalogue.Exceptions;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ContactCatalogue.Exceptions;
 
 namespace ContactCatalogue
 {
     internal class ContactCatalogue
     {
+        private Dictionary<int, Contact> byId = new Dictionary<int, Contact>();
+        private HashSet<string> emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly ILogger<ContactCatalogue> _logger;
 
-        public Dictionary<int, Contact> ById = new Dictionary<int, Contact>();
-        private HashSet<string> Emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        public ContactCatalogue(ILogger<ContactCatalogue> logger)
+        {
+            _logger = logger;
+        }
 
-        public bool AddContact(Contact c)
+        public void AddContact(Contact c)
         {
             try
             {
-                if (!IsValidEmail(c.Email)) throw new InvalidEmailException(c.Email);
-                if (!Emails.Add(c.Email)) throw new DuplicateEmailException(c.Email);
+                if (!IsValidEmail(c.Email))
+                    throw new InvalidEmailException(c.Email);
+
+                if (!emails.Add(c.Email))
+                    throw new DuplicateEmailException(c.Email);
+                byId.Add(c.Id, c);
+                _logger.LogInformation("Contact added: {Email}", c.Email);
             }
             catch (InvalidEmailException ex)
             {
-                // CATCH block for a specific validation error
+                _logger.LogWarning("Invalid email: {Email}", c.Email);
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"CAUGHT VALIDATION ERROR: {ex.Message}");
                 Console.ResetColor();
-                Console.ReadKey(true);
-                return false;
             }
             catch (DuplicateEmailException ex)
             {
-                // CATCH block for a specific data integrity error
+                _logger.LogWarning("Duplicated email: {Email}", c.Email);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"CAUGHT DUPLICATE ERROR: {ex.Message}");
                 Console.ResetColor();
-                Console.ReadKey(true);
-                return false;
             }
-            ById.Add(c.Id, c);
-            return true;
         }
 
-       
-
-        public int GenerateUniqueID()
-        {
-            int uniqueID = 0;
-            Random random = new Random();
-            do
-            {
-                uniqueID = random.Next(10000);
-            } while (ById.ContainsKey(uniqueID));
-            return uniqueID;   
-        }
-        public static bool IsValidEmail(string email)
+        static bool IsValidEmail(string email)
         {
             try
             {
