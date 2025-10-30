@@ -30,7 +30,7 @@ namespace ContactCatalogue.ConsoleUI
 
                 if (_cc.AddContact(new Contact(_cc.GenerateUniqueID(), nameInp, emailInp, tagsInp)))
                 {
-                    Console.WriteLine("Successfully added contact!");
+                    Console.WriteLine("[Added 1 contact in your catalogue.]");
                     break;
                 }
             }

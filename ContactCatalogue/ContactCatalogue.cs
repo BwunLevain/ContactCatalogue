@@ -19,17 +19,15 @@ namespace ContactCatalogue
             _logger = logger;
         }
 
-        public void AddContact(Contact c)
+        public bool AddContact(Contact c)
         {
             try
             {
-                if (!IsValidEmail(c.Email))
-                    throw new InvalidEmailException(c.Email);
-
-                if (!emails.Add(c.Email))
-                    throw new DuplicateEmailException(c.Email);
+                if(!IsValidEmail(c.Email)) throw new InvalidEmailException(c.Email);
+                if (!emails.Add(c.Email)) throw new DuplicateEmailException(c.Email);
                 byId.Add(c.Id, c);
-                _logger.LogInformation("Contact added: {Email}", c.Email);
+                _logger.LogInformation("\nContact added: {Email}", c.Email);
+                return true;
             }
             catch (InvalidEmailException ex)
             {
@@ -37,6 +35,7 @@ namespace ContactCatalogue
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"CAUGHT VALIDATION ERROR: {ex.Message}");
                 Console.ResetColor();
+                return false;
             }
             catch (DuplicateEmailException ex)
             {
@@ -44,7 +43,9 @@ namespace ContactCatalogue
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"CAUGHT DUPLICATE ERROR: {ex.Message}");
                 Console.ResetColor();
+                return false;
             }
+            
         }
 
         static bool IsValidEmail(string email)
@@ -59,8 +60,27 @@ namespace ContactCatalogue
 
         public int GenerateUniqueID()
         {
+            
             Random rnd = new Random();
-            return rnd.Next(99, 1000);
+            int outputNumber = 0;
+            do
+            {
+                outputNumber = rnd.Next(10000);
+            } while (byId.ContainsKey(outputNumber));
+            return outputNumber;
+        }
+        
+        public void ShowAllContacts()
+        {
+            if (byId.Count == 0)
+            {
+                Console.WriteLine("No contacts....");
+                Console.ReadKey(true);
+            }
+            foreach (var c in byId)
+            {
+                Console.WriteLine(c.Value);
+            }
         }
     }
 }
