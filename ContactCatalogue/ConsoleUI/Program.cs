@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ContactCatalogue.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 
@@ -39,14 +40,14 @@ namespace ContactCatalogue.ConsoleUI
             cc.AddContact(new Contact(cc.GenerateUniqueID(), "Rita Gomez", "rita.gomez@mail.com", "friend, cooking"));
             cc.AddContact(new Contact(cc.GenerateUniqueID(), "Sam Walker", "sam.walker@tech.io", "dev, coworker"));
             cc.AddContact(new Contact(cc.GenerateUniqueID(), "Tina Alvarez", "tina.alvarez@company.org", "hr"));
-
+            FilteringSystem filterSystem = new(cc);
             while (true)
             {
                 Console.Clear();
                 Console.WriteLine("=== Contact Catalogue ===");
                 Console.WriteLine("1) Add");
                 Console.WriteLine("2) List");
-                Console.WriteLine("3) Search");
+                Console.WriteLine("3) Search (Name contains)");
                 Console.WriteLine("4) Filter");
                 Console.WriteLine("5) Export to CSV file");
                 Console.WriteLine("0) Exit");
@@ -61,23 +62,20 @@ namespace ContactCatalogue.ConsoleUI
                         contactAdder.Run();
                         break;
                     case "2":
-                        if (cc.byId.Count == 0)
-                        {
-                            Console.WriteLine("No contacts....");
-                            Console.ReadKey(true);
-                            break;
-                        }
-                        foreach (var kvp in cc.byId)
-                        {
-                            Console.WriteLine($"\n* ({kvp.Key}) {kvp.Value}");
-                        }
+                        cc.ShowAllContacts();
                         Console.ReadKey(true);
                         break;
                     case "3":
+                        filterSystem.SearchByName();
+                        Console.ReadKey(true);
                         break;
                     case "4":
+                        filterSystem.SearchByTag();
+                        Console.ReadKey(true);
                         break;
                     case "5":
+                        Console.WriteLine("Feature not yet implemented.");
+                        Console.ReadKey(true);
                         break;
                     case "0":
                         return;

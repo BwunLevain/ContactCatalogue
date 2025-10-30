@@ -24,7 +24,7 @@ namespace ContactCatalogue
 
         public override string ToString()
         {
-            return $"{Name} | {Email} | {String.Join(", ", Tags)}";
+            return $"- ({Id}) {Name} <{Email}> [{String.Join(", ", Tags)}]\n";
         }
     }
 }
