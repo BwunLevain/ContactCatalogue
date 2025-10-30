@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 namespace ContactCatalogue.ConsoleUI
 {
@@ -7,7 +9,15 @@ namespace ContactCatalogue.ConsoleUI
     {
         static void Main(string[] args)
         {
-            ContactCatalogue cc = new ContactCatalogue();
+            using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+
+            ILogger logger = loggerFactory.CreateLogger<Program>();
+            ILogger<ContactCatalogue> cclogger = loggerFactory.CreateLogger<ContactCatalogue>();
+
+            ContactCatalogue cc = new ContactCatalogue(cclogger);
+
+
+            logger.LogInformation("Program starting");
 
             cc.AddContact(new Contact(cc.GenerateUniqueID(), "Ava Harper", "ava.harper@example.com", "friend, coworker"));
             cc.AddContact(new Contact(cc.GenerateUniqueID(), "Ben Carter", "ben.carter@example.com", "family"));
