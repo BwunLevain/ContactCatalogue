@@ -1,9 +1,10 @@
-﻿using System;
+﻿using ContactCatalogue.Exceptions;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ContactCatalogue.Exceptions;
 
 namespace ContactCatalogue
 {
@@ -11,30 +12,41 @@ namespace ContactCatalogue
     {
         private Dictionary<int, Contact> byId = new Dictionary<int, Contact>();
         private HashSet<string> emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly ILogger<ContactCatalogue> _logger;
+
+        public ContactCatalogue(ILogger<ContactCatalogue> logger)
+        {
+            _logger = logger;
+        }
 
         public void AddContact(Contact c)
         {
             try
             {
-                if (!IsValidEmail(c.Email)) throw new InvalidEmailException(c.Email);
-                if (!emails.Add(c.Email)) throw new DuplicateEmailException(c.Email);
+                if (!IsValidEmail(c.Email))
+                    throw new InvalidEmailException(c.Email);
+
+                if (!emails.Add(c.Email))
+                    throw new DuplicateEmailException(c.Email);
+                byId.Add(c.Id, c);
+                _logger.LogInformation("Contact added: {Email}", c.Email);
             }
             catch (InvalidEmailException ex)
             {
-                // CATCH block for a specific validation error
+                _logger.LogWarning("Invalid email: {Email}", c.Email);
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"CAUGHT VALIDATION ERROR: {ex.Message}");
                 Console.ResetColor();
             }
             catch (DuplicateEmailException ex)
             {
-                // CATCH block for a specific data integrity error
+                _logger.LogWarning("Duplicated email: {Email}", c.Email);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"CAUGHT DUPLICATE ERROR: {ex.Message}");
                 Console.ResetColor();
             }
-            byId.Add(c.Id, c);
         }
+
         static bool IsValidEmail(string email)
         {
             try
