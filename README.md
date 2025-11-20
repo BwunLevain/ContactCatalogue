@@ -38,7 +38,8 @@ ContactCatalogue/
 │   └── Contact.cs          # Data model
 ├── Services/
 │   ├── ContactService.cs   # Business logic
-│   └── IContactRepository.cs # Data access interface
+│   ├── IContactRepository.cs # Data access interface
+│   └── InMemoryContactRepository.cs
 └── ContactCatalogue.Tests/
     └── FilterTests.cs      # Unit tests for filtering logic
 ```
