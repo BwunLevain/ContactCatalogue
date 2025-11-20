@@ -18,7 +18,6 @@ namespace ContactCatalogue.ConsoleUI
         {
             while (true)
             {
-                Console.Clear();
                 Console.WriteLine("=== Contact Adder ===");
                 Console.Write("\nName: ");
                 string nameInp = Console.ReadLine();

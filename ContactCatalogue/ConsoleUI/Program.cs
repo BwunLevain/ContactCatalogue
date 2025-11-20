@@ -58,8 +58,10 @@ namespace ContactCatalogue.ConsoleUI
                 switch (inp)
                 {
                     case "1":
+                        Console.Clear();
                         ContactAdder contactAdder = new ContactAdder(cc);
                         contactAdder.Run();
+                        Console.ReadKey();
                         break;
                     case "2":
                         cc.ShowAllContacts();
