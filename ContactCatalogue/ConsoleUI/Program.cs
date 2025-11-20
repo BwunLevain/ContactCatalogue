@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ContactCatalogue.Models;
 using ContactCatalogue.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
@@ -13,9 +14,9 @@ namespace ContactCatalogue.ConsoleUI
             using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
 
             ILogger logger = loggerFactory.CreateLogger<Program>();
+            IContactRepository repo = new InMemoryContactRepository();
             ILogger<ContactService> cclogger = loggerFactory.CreateLogger<ContactService>();
-
-            ContactService cc = new ContactService(cclogger);
+            ContactService cc = new ContactService(repo, cclogger);
 
             logger.LogInformation("Program starting");
 
@@ -56,7 +57,6 @@ namespace ContactCatalogue.ConsoleUI
                 switch (inp)
                 {
                     case "1":
-                        Console.Clear();
                         ContactAdder contactAdder = new ContactAdder(cc);
                         contactAdder.Run();
                         Console.ReadKey();
@@ -66,7 +66,6 @@ namespace ContactCatalogue.ConsoleUI
                         Console.ReadKey(true);
                         break;
                     case "3":
-                        Console.Clear();
                         Console.Write("Search by name: ");
                         string nameInput = Console.ReadLine();
                         var HitsByName = cc.SearchByName(nameInput);
@@ -80,7 +79,6 @@ namespace ContactCatalogue.ConsoleUI
                         Console.ReadKey(true);
                         break;
                     case "4":
-                        Console.Clear();
                         Console.Write("Filter by tag: ");
                         string tag = Console.ReadLine();
                         var HitsByTag = cc.SearchByTag(tag);

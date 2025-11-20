@@ -1,4 +1,5 @@
-﻿using ContactCatalogue.Services;
+﻿using ContactCatalogue.Models;
+using ContactCatalogue.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

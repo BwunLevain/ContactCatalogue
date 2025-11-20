@@ -1,3 +1,4 @@
+using ContactCatalogue.Models;
 using ContactCatalogue.Services;
 using Microsoft.Extensions.Logging;
 using Moq;

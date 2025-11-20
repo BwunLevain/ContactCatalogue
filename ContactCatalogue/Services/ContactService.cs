@@ -21,7 +21,7 @@ namespace ContactCatalogue.Services
             {
                 if (!IsValidEmail(c.Email)) throw new InvalidEmailException(c.Email);
                 var allContacts = _repository.GetAll();
-                if (allContacts.Any(existing => existing.Email.Equals(c.Email, StringComparison.OrdinalIgnoreCase)))
+                if (((InMemoryContactRepository)_repository).ContainsEmail(c.Email))
                 {
                     throw new DuplicateEmailException(c.Email);
                 }
@@ -87,6 +87,20 @@ namespace ContactCatalogue.Services
                 .Where(c => c.Tags != null && c.Tags.Contains(searching, StringComparer.OrdinalIgnoreCase))
                 .OrderBy(c => c.Name)
                 .ToList();
+        }
+
+        public int GenerateUniqueID()
+        {
+            Random rnd = new Random();
+            int newId;
+
+            do
+            {
+                newId = rnd.Next(1, 10000);
+            }
+            while (_repository.GetAll().Any(c => c.Id == newId));
+
+            return newId;
         }
     }
 }
