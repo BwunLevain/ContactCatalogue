@@ -13,10 +13,9 @@ namespace ContactCatalogue.ConsoleUI
             using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
 
             ILogger logger = loggerFactory.CreateLogger<Program>();
-            ILogger<ContactCatalogue> cclogger = loggerFactory.CreateLogger<ContactCatalogue>();
+            ILogger<ContactService> cclogger = loggerFactory.CreateLogger<ContactService>();
 
-            ContactCatalogue cc = new ContactCatalogue(cclogger);
-
+            ContactService cc = new ContactService(cclogger);
 
             logger.LogInformation("Program starting");
 
@@ -40,7 +39,6 @@ namespace ContactCatalogue.ConsoleUI
             cc.AddContact(new Contact(cc.GenerateUniqueID(), "Rita Gomez", "rita.gomez@mail.com", "friend, cooking"));
             cc.AddContact(new Contact(cc.GenerateUniqueID(), "Sam Walker", "sam.walker@tech.io", "dev, coworker"));
             cc.AddContact(new Contact(cc.GenerateUniqueID(), "Tina Alvarez", "tina.alvarez@company.org", "hr"));
-            FilteringSystem filterSystem = new(cc);
             while (true)
             {
                 Console.Clear();
@@ -68,11 +66,31 @@ namespace ContactCatalogue.ConsoleUI
                         Console.ReadKey(true);
                         break;
                     case "3":
-                        filterSystem.SearchByName();
+                        Console.Clear();
+                        Console.Write("Search by name: ");
+                        string nameInput = Console.ReadLine();
+                        var HitsByName = cc.SearchByName(nameInput);
+                        if (HitsByName != null)
+                        {
+                            foreach (var h in HitsByName)
+                            {
+                                Console.WriteLine(h);
+                            }
+                        }
                         Console.ReadKey(true);
                         break;
                     case "4":
-                        filterSystem.SearchByTag();
+                        Console.Clear();
+                        Console.Write("Filter by tag: ");
+                        string tag = Console.ReadLine();
+                        var HitsByTag = cc.SearchByTag(tag);
+                        if(HitsByTag != null)
+                        {
+                            foreach(var h in HitsByTag)
+                            {
+                                Console.WriteLine(h);
+                            }
+                        }
                         Console.ReadKey(true);
                         break;
                     case "5":

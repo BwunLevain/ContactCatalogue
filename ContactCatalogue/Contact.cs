@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace ContactCatalogue
 {
-    internal class Contact
+    public class Contact
     {
         public int Id;
         public string Name { get; set; }
         public string Email { get; set; }
         public List<string> Tags { get; set; }
 
+        
+        public Contact() { }
         public Contact(int id, string name, string email, string tags)
         {
             Name = name;

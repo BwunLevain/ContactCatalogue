@@ -1,21 +1,16 @@
 ﻿using ContactCatalogue.Exceptions;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ContactCatalogue
 {
-    internal class ContactCatalogue
+    public class ContactService
     {
-        public Dictionary<int, Contact> byId = new Dictionary<int, Contact>();
-        private HashSet<string> emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private readonly ILogger<ContactCatalogue> _logger;
+        private readonly IContactRepository _repository;
+        private readonly ILogger<ContactService> _logger;
 
-        public ContactCatalogue(ILogger<ContactCatalogue> logger)
+        public ContactService(IContactRepository repository, ILogger<ContactService> logger)
         {
+            _repository = repository;
             _logger = logger;
         }
 
@@ -23,9 +18,15 @@ namespace ContactCatalogue
         {
             try
             {
-                if(!IsValidEmail(c.Email)) throw new InvalidEmailException(c.Email);
-                if (!emails.Add(c.Email)) throw new DuplicateEmailException(c.Email);
-                byId.Add(c.Id, c);
+                if (!IsValidEmail(c.Email)) throw new InvalidEmailException(c.Email);
+                var allContacts = _repository.GetAll();
+                if (allContacts.Any(existing => existing.Email.Equals(c.Email, StringComparison.OrdinalIgnoreCase)))
+                {
+                    throw new DuplicateEmailException(c.Email);
+                }
+
+                _repository.Add(c);
+
                 _logger.LogInformation("\nContact added: {Email}", c.Email);
                 return true;
             }
@@ -45,9 +46,7 @@ namespace ContactCatalogue
                 Console.ResetColor();
                 return false;
             }
-            
         }
-
         static bool IsValidEmail(string email)
         {
             try
@@ -58,29 +57,35 @@ namespace ContactCatalogue
             catch { return false; }
         }
 
-        public int GenerateUniqueID()
-        {
-            
-            Random rnd = new Random();
-            int outputNumber = 0;
-            do
-            {
-                outputNumber = rnd.Next(10000);
-            } while (byId.ContainsKey(outputNumber));
-            return outputNumber;
-        }
-        
         public void ShowAllContacts()
         {
-            if (byId.Count == 0)
+            var contacts = _repository.GetAll().ToList();
+
+            if (contacts.Count == 0)
             {
                 Console.WriteLine("No contacts....");
                 Console.ReadKey(true);
             }
-            foreach (var c in byId)
+            foreach (var c in contacts)
             {
-                Console.WriteLine(c.Value);
+                Console.WriteLine(c);
             }
+        }
+
+        public List<Contact> SearchByName(string searching)
+        {
+            return _repository.GetAll()
+                .Where(c => c.Name.Contains(searching, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(c => c.Name)
+                .ToList();
+        }
+
+        public List<Contact> SearchByTag(string searching)
+        {
+            return _repository.GetAll()
+                .Where(c => c.Tags != null && c.Tags.Contains(searching, StringComparer.OrdinalIgnoreCase))
+                .OrderBy(c => c.Name)
+                .ToList();
         }
     }
 }

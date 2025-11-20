@@ -9,8 +9,8 @@ namespace ContactCatalogue.ConsoleUI
 {
     internal class ContactAdder
     {
-        private readonly ContactCatalogue _cc;
-        public ContactAdder(ContactCatalogue cc)
+        private readonly ContactService _cc;
+        public ContactAdder(ContactService cc)
         {
             _cc = cc;
         }
