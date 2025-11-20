@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ContactCatalogue
+namespace ContactCatalogue.Models
 {
     public class Contact
     {
@@ -26,7 +26,7 @@ namespace ContactCatalogue
 
         public override string ToString()
         {
-            return $"- ({Id}) {Name} <{Email}> [{String.Join(", ", Tags)}]\n";
+            return $"- ({Id}) {Name} <{Email}> [{string.Join(", ", Tags)}]\n";
         }
     }
 }

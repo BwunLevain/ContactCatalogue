@@ -1,7 +1,8 @@
 ﻿using ContactCatalogue.Exceptions;
+using ContactCatalogue.Models;
 using Microsoft.Extensions.Logging;
 
-namespace ContactCatalogue
+namespace ContactCatalogue.Services
 {
     public class ContactService
     {
